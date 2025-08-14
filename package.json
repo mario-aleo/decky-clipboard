@@ -1,30 +1,31 @@
 {
-  "name": "decky-plugin-template",
-  "version": "0.0.1",
-  "description": "A template to quickly create decky plugins from scratch, based on TypeScript and webpack",
+  "name": "decky-clipboard",
+  "version": "0.0.2",
+  "description": "A simple clipboard manager plugin for Steam Deck that allows you to save and manage frequently used text values.",
   "type": "module",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && ./create-zip.sh",
     "watch": "rollup -c -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SteamDeckHomebrew/decky-plugin-template.git"
+    "url": "git+https://github.com/mario-aleo/decky-clipboard.git"
   },
   "keywords": [
     "decky",
     "plugin",
-    "plugin-template",
+    "clipboard",
     "steam-deck",
-    "deck"
+    "deck",
+    "utility"
   ],
-  "author": "You <you@you.tld>",
+  "author": "Mario Aleo",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/SteamDeckHomebrew/decky-plugin-template/issues"
+    "url": "https://github.com/mario-aleo/decky-clipboard/issues"
   },
-  "homepage": "https://github.com/SteamDeckHomebrew/decky-plugin-template#readme",
+  "homepage": "https://github.com/mario-aleo/decky-clipboard#readme",
   "devDependencies": {
     "@decky/rollup": "^1.0.1",
     "@decky/ui": "^4.7.2",
