@@ -181,7 +181,14 @@ function Content() {
     <PanelSection title="Clipboard Manager">
       {/* Input Section */}
       <PanelSectionRow>
-        <Focusable style={{ display: "flex", gap: "8px", width: "100%", alignItems: "center" }}>
+        <Focusable
+          style={{
+            display: "flex",
+            gap: "8px",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
           <TextField
             label="Enter text to save..."
             value={inputValue}
@@ -199,9 +206,9 @@ function Content() {
               alignItems: "center",
               justifyContent: "center",
               minWidth: "auto",
-              padding: "8px 12px",
               width: "40px",
-              height: "40px"
+              height: "40px",
+              padding: "8px 12px",
             }}
             onClick={handleSaveValue}
             disabled={isLoading || !inputValue.trim()}
@@ -215,11 +222,11 @@ function Content() {
       <PanelSectionRow>
         <div style={{ width: "100%" }}>
           {clipboardValues.length === 0 ? (
-            <div style={{ 
-              textAlign: "center", 
+            <div style={{  
               padding: "20px", 
               color: "var(--decky-text-color-secondary)",
-              fontSize: "14px"
+              fontSize: "14px",
+              textAlign: "center",
             }}>
               No saved values yet. Add some text above to get started!
             </div>
@@ -229,11 +236,11 @@ function Content() {
                 key={index}
                 style={{
                   display: "flex",
+                  gap: "8px",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  gap: "8px",
                   padding: "8px 0",
-                  borderBottom: index < clipboardValues.length - 1 ? "1px solid var(--decky-border-color)" : "none"
+                  borderBottom: index < clipboardValues.length - 1 ? "1px solid var(--decky-border-color)" : "none",
                 }}
               >
                 <TextField
