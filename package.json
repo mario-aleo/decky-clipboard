@@ -1,6 +1,6 @@
 {
   "name": "decky-clipboard",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "A simple clipboard manager plugin for Steam Deck that allows you to save and manage frequently used text values.",
   "type": "module",
   "scripts": {
