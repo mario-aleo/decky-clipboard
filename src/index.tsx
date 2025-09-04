@@ -1,7 +1,7 @@
 import {
   Button,
-  Focusable,
-  TextField,
+  showModal,
+  DialogButton,
   PanelSection,
   staticClasses,
   PanelSectionRow,
@@ -11,13 +11,13 @@ import {
   definePlugin,
 } from "@decky/api"
 import { useState, useEffect } from "react";
-import { FaClipboard, FaTrash, FaPlus } from "react-icons/fa";
+import { FaClipboard, FaTrash } from "react-icons/fa";
+import AddSaveValueModal from "./components/AddSaveValueModal";
 
 
 function Content() {
   const storage = "clipboard-values";
   const [isLoading, setIsLoading] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const [clipboardValues, setClipboardValues] = useState<string[]>([]);
 
   // Load clipboard values on component mount
@@ -25,28 +25,11 @@ function Content() {
     loadClipboardValues();
   }, []);
 
-  const saveClipboardValue = async (value: string): Promise<boolean> => {
-    try {
-      localStorage.setItem(
-        storage,
-        JSON.stringify(
-          [...clipboardValues, value]
-        )
-      );
-
-      return true;
-    } catch (error) {
-      console.error("Error saving value:", error);
-      toaster.toast({
-        title: "Error",
-        body: "Failed to save value."
-      });
-
-      return false;
-    }
-  };
+  const closeModal = () => { };
 
   const loadClipboardValues = async () => {
+    setIsLoading(true);
+
     try {
       console.log("Loading clipboard values...");
       setClipboardValues(
@@ -61,6 +44,8 @@ function Content() {
         body: "Failed to load saved values"
       });
     }
+
+    setIsLoading(false);
   };
 
   const deleteClipboardValue = async (value: string): Promise<boolean> => {
@@ -72,32 +57,6 @@ function Content() {
       console.error("Error deleting value:", error);
       
       return false;
-    }
-  };
-
-  const handleSaveValue = async () => {
-    if (!inputValue.trim()) return;
-
-    setIsLoading(true);
-
-    try {
-      const success = await saveClipboardValue(inputValue);
-      
-      if (success) {
-        console.error("Success saving value:", inputValue);
-
-        setInputValue("");
-
-        await loadClipboardValues();
-      }
-    } catch (error) {
-      console.error("Error saving value:", error);
-      toaster.toast({
-        title: "Error",
-        body: "Failed to save value"
-      });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -143,6 +102,10 @@ function Content() {
     }
   };
 
+  const openAddSaveValueModal = () => {
+    showModal(<AddSaveValueModal closeModal={closeModal} />);
+  };
+
   // Reliable clipboard copy function (same as Lossless Scaling plugin)
   const copyToClipboardReliable = async (text: string): Promise<boolean> => {
     // Use the proven input simulation method
@@ -181,46 +144,28 @@ function Content() {
     <PanelSection title="Clipboard Manager">
       {/* Input Section */}
       <PanelSectionRow>
-        <Focusable
-          style={{
-            display: "flex",
-            gap: "8px",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <TextField
-            label="Enter text to save..."
-            value={inputValue}
-            style={{ flex: 1 }}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSaveValue();
-              }
-            }}
-          />
-          <Button
+          <DialogButton
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minWidth: "auto",
-              width: "40px",
-              height: "40px",
-              padding: "8px 12px",
+              marginBottom: "16px"
             }}
-            onClick={handleSaveValue}
-            disabled={isLoading || !inputValue.trim()}
+            onClick={openAddSaveValueModal}
+            disabled={isLoading}
           >
-            <FaPlus />
-          </Button>
-        </Focusable>
+            Save a New Value
+          </DialogButton>
       </PanelSectionRow>
 
       {/* Saved Values List */}
       <PanelSectionRow>
-        <div style={{ width: "100%" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            flexDirection: "column",
+            width: "100%",
+            padding: "0",
+          }}
+        >
           {clipboardValues.length === 0 ? (
             <div style={{  
               padding: "20px", 
@@ -237,50 +182,47 @@ function Content() {
                 style={{
                   display: "flex",
                   gap: "8px",
+                  flex: "1",
                   alignItems: "center",
+                  flexDirection: "row",
                   justifyContent: "space-between",
-                  padding: "8px 0",
+                  padding: "0",
                   borderBottom: index < clipboardValues.length - 1 ? "1px solid var(--decky-border-color)" : "none",
                 }}
               >
-                <TextField
-                  value={value}
-                  style={{ flex: 1 }}
-                  disabled
-                  bIsPassword
-                />
-                <div
+                <Button
                   style={{
                     display: "flex",
-                    gap: "4px",
-                    alignItems: 'center',
+                    gap: "8px",
+                    flex: "1",
+                    alignItems: "center",
+                    maxWidth: "100%",
+                    padding: "8px",
+                    overflow: "hidden"
                   }}
+                  onClick={() => handleCopyValue(value)}
                 >
-                  <Button
+                  <FaClipboard size={12} />
+                  <span
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: "auto", 
-                      padding: "8px",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
                     }}
-                    onClick={() => handleCopyValue(value)}
-                  >
-                    <FaClipboard size={12} />
-                  </Button>
-                  <Button
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: "auto", 
-                      padding: "8px",
-                    }}
-                    onClick={() => handleDeleteValue(value)}
-                  >
-                    <FaTrash size={12} />
-                  </Button>
-                </div>
+                  >{value}</span>
+                </Button>
+                <Button
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minWidth: "auto", 
+                    padding: "8px",
+                  }}
+                  onClick={() => handleDeleteValue(value)}
+                >
+                  <FaTrash size={12} />
+                </Button>
               </div>
             ))
           )}
